@@ -1,0 +1,10 @@
+{% extends "default/_layout.twig" %}
+
+{% block container %}
+    {% include "header.twig" %}
+    <div class="r content">
+        {% include "articles.twig" %}
+        {% include "sidebar.twig" %}
+    </div>
+    {% include "footer.twig" %}
+{% endblock %}

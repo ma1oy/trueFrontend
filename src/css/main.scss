@@ -1,0 +1,33 @@
+// DEFAULT
+@import "default/configs/default";
+@import "default/reset";
+@import "default/extend";
+@import "default/common";
+
+// THEMES
+@import "default/themes/truecode";
+
+// COMPONENTS
+@import "default/grid";
+//@import 'default/menu';
+//@import 'default/breadcrumbs';
+
+header, .header {
+  @extend %header !optional;
+}
+
+main, .content {
+  position: relative;
+  @extend %content !optional;
+}
+
+aside, .sidebar {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  @extend %sidebar !optional;
+}
+
+footer, .footer {
+  @extend %footer !optional;
+}
