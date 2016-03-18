@@ -1,0 +1,21 @@
+sourceDir:    src
+publicDir:    build
+
+lang:         en
+title:        my New document
+description:  Easy frontend
+author:       romanVia
+inlineSvg:    true
+mainMarkup:   index.twig
+mainStyle:    style.css
+mainScript:   main.js
+favicon:      img/favicon.png
+imageSrc:     #img/...
+
+stylesCDNs:
+  - //fonts.googleapis.com/css?family=Roboto:400,300
+  # https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css
+  # https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css
+scriptsCDNs:
+  # https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js
+  # https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js
