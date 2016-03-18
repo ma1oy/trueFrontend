@@ -3,23 +3,32 @@
 <head>
     <title>{{ title }}</title>
     <meta charset="utf-8" />
-    <meta name="description" content="{{ description }}"/>
-    <meta name="author" content="{{ author }}"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content="{{ description }}" />
+    <meta name="author" content="{{ author }}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="x-ua-compatible" content="ie=edge"/>
-    <link rel="shortcut icon" type="image/png" href="{{ favicon }}"/>
-    <link rel="stylesheet" type="text/css" href="{{ style }}"/>
-    {% include "../../cdn/styles.html" %}
+    <link rel="shortcut icon" type="image/png" href="{{ favicon }}" />
+    <link rel="image_src" href="{{ imageSrc }}" />
+    <link rel="stylesheet" type="text/css" href="{{ mainStyle }}" />
+    {% for styleURI in stylesCDNs %}
+    <link rel="stylesheet" type="text/css" href="{{ styleURI }}" />
+    {% endfor %}
 </head>
 <body>
 <div class="container">
-    {% block container %}{% endblock %}
-    {% if inlineSvg %}
-        <div style="height: 0; width: 0; position: absolute; visibility: hidden">
-            {% include "../../../build/svg/svg.svg" %}
-        </div>
-    {% endif %}
-    {% include "../../cdn/scripts.html" %}
+{% block container %}{% endblock %}
 </div>
+{% if inlineSvg %}
+<div style="height: 0; width: 0; position: absolute; visibility: hidden">
+    {% include "../../../build/svg/svg.svg" %}
+</div>
+{% endif %}
+!<!--[if lt IE 9]>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+<![endif]-->
+{% for scriptURI in scriptsCDNs %}
+<script type="text/javascript" src="{{ scriptURI }}"></script>
+{% endfor %}
+<script type="text/javascript" src="{{ mainScript }}"></script>
 </body>
 </html>

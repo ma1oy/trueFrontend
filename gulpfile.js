@@ -1,7 +1,5 @@
 'use strict';
 
-var siteconfig = 'src/siteconfig.json';
-
 var gulp        = require('gulp'),
     del         = require('del'),               // Files remove
     twig        = require('gulp-twig'),         // twig parser
@@ -11,7 +9,6 @@ var gulp        = require('gulp'),
     svgmin      = require('gulp-svgmin'),       // svg minimization
     rename      = require('gulp-rename'),       // File rename (for svg's id's)
     rigger      = require('gulp-rigger'),       // Files including (//= path/name)
-    //watch       = require('gulp-watch'),        // Live reload // "gulp-watch":         "^4.3.5",
     prefixer    = require('gulp-autoprefixer'), // Automatic adding prefix for CSS rules
     uglify      = require('gulp-uglify'),       // js minimization
     scss        = require('gulp-scss'),         // SASS parser
@@ -20,35 +17,48 @@ var gulp        = require('gulp'),
     imagemin    = require('gulp-imagemin'),     // Image minimization
     pngquant    = require('imagemin-pngquant'), // Lossy compression of PNG images
     browserSync = require("browser-sync"),      // Browser synchronization
-    reload      = browserSync.reload;           // Browser page reload
+    reload      = browserSync.reload,           // Browser page reload
+    YAML        = require('yamljs');
+
+// var mainFiles = {
+//     index: 'index.twig',
+//     script: 'main.js',
+//     style:  'style.scss'
+// };
 
 var mypath = {
-    build: { // Build files
-        html:   'build/',
-        svg:    'build/svg/',
-        js:     'build/',
+    config:     'config.yml',
+    dest: {
+        home:   './build',
+        markup: 'build/',
         css:    'build/',
+        js:     'build/',
+        svg:    'build/svg/',
         img:    'build/img/'
     },
-    src: { // Source files
-        html:   'src/templates/index.twig',
-        svg:    'src/svg/**/[^_]*.svg',
+    src: {
+        home:   './src',
+        markup: 'src/templates/index.twig',
         js:     'src/js/main.js',
-        css:    'src/css/main.scss',
+        css:    'src/css/style.scss',
+        svg:    'src/svg/**/[^_]*.svg',
         img:    'src/img/**/[^_]*.*'
     },
-    watch: { // Watch files
-        html:   'src/**/[^_]*.twig',
-        svg:    'src/svg/**/[^_]*.svg',
+    watch: {
+        markup:   'src/templates/*.twig', // ? [^_]
         js:     'src/js/**/[^_]*.js',
         css:    'src/css/**/*.scss', // ? [^_]
+        svg:    'src/svg/**/[^_]*.svg',
         img:    'src/img/**/[^_]*.*'
-    },
-    clean: './build'
+    }
 };
 
+// var config = YAML.load(mypath.config);
+
+var config = YAML.load(mypath.config);
+
 // DEV SERVER CONFIG
-var config = {
+var serverConfig = {
     server: {
         baseDir: "./build"
     },
@@ -70,23 +80,24 @@ gulp.task('svg:build', function () {
             path.basename = name.join('-');
         }))
         .pipe(svgstore({ inlineSvg: true }))    // svg concatenation into symbols
-        .pipe(gulp.dest(mypath.build.svg));     // Save to build path
+        .pipe(gulp.dest(mypath.dest.svg));      // Save to build path
 });
 
 // HTML BUILD WITH INLINE SVG TASK
 gulp.task('htmlsvg:build', ['svg:build'], function () {
     return gulp
-        .src(mypath.src.html)
+        .src(mypath.src.markup)
         .pipe(twig({
-            data: JSON.parse(require('fs')
-                .readFileSync(siteconfig, 'utf8'))
+            // data: YAML.parse(require('fs').readFileSync(config, 'utf8'))
+            data: YAML.load(mypath.config)
+            // data: config
         }))
-        .pipe(gulp.dest(mypath.build.html));    // Save to build path
+        .pipe(gulp.dest(mypath.dest.markup));    // Save to build path
 });
 
 // HTML BUILD
 gulp.task('html:build', ['htmlsvg:build'], function() {
-    return del([mypath.build.svg]);             // Remove svg build folder
+    return del([mypath.dest.svg]);             // Remove svg build folder
 });
 
 // IMAGE BUILD TASK
@@ -99,7 +110,7 @@ gulp.task('image:build', function () {
             use: [pngquant()],
             interlaced: true
         }))
-        .pipe(gulp.dest(mypath.build.img));      // Save to build path
+        .pipe(gulp.dest(mypath.dest.img));      // Save to build path
         //.pipe(reload({stream: true}));          // Server reload
 });
 
@@ -114,7 +125,7 @@ gulp.task('css:build', function () {
         }))
         .pipe(cssmin())                         // css minimization
         .pipe(sourcemaps.write())               // Write maps
-        .pipe(gulp.dest(mypath.build.css));      // Save to build path
+        .pipe(gulp.dest(mypath.dest.css));     // Save to build path
         //.pipe(reload({stream: true}));          // Server reload
 });
 
@@ -131,19 +142,23 @@ gulp.task('js:build', function () {
         .pipe(sourcemaps.init())                // Maps initialization
         .pipe(uglify())                         // js minimization
         .pipe(sourcemaps.write())               // Write maps
-        .pipe(gulp.dest(mypath.build.js));       // Save to build path
+        .pipe(gulp.dest(mypath.dest.js));      // Save to build path
         //.pipe(reload({stream: true}));          // Server reload
 });
 
 // CLEAN TASK
 gulp.task('clean', function() {
-    return del(mypath.clean);
+    return del(mypath.dest.home);
     //return del(Object.keys(mypath.build).map(function (key) {return mypath.build[key]}));
+});
+
+// CONFIG UPDATE TASK
+gulp.task('config:update', function() {
+    config = YAML.load(mypath.config);
 });
 
 // REBUILD TASK
 gulp.task('rebuild', [
-    //'clean',
     'html:build',
     'css:build',
     'js:build',
@@ -156,17 +171,18 @@ gulp.task('build', ['clean'], function() {
 });
 
 // WEBSERVER TASK
-gulp.task('webserver', function() {
-    browserSync(config);
+gulp.task('live', function() {
+    browserSync(serverConfig);
 });
 
 // WATCH TASK
 gulp.task('watch', function(){
-    gulp.watch([siteconfig, mypath. watch.html, mypath.watch.svg], ['html:build', reload]);
+    gulp.watch(mypath.config, ['config:update', 'build', reload]);
+    gulp.watch([mypath.watch.markup, mypath.watch.svg], ['html:build', reload]);
     gulp.watch(mypath.watch.css, ['css:build', reload]);
     gulp.watch(mypath.watch.js, ['js:build', reload]);
     gulp.watch(mypath.watch.img, ['image:build', reload]);
 });
 
 // DEFAULT TASK
-gulp.task('default', ['build', 'webserver', 'watch']);
+gulp.task('default', ['build', 'live', 'watch']);
