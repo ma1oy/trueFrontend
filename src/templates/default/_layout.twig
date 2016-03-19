@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ lang }}" lang="{{ lang }}">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ meta.lang }}" lang="{{ meta.lang }}">
 <head>
-    <title>{{ title }}</title>
+    <title>{{ meta.title }}</title>
     <meta charset="utf-8" />
-    <meta name="description" content="{{ description }}" />
-    <meta name="author" content="{{ author }}" />
+    <meta name="description" content="{{ meta.description }}" />
+    <meta name="author" content="{{ meta.author }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="x-ua-compatible" content="ie=edge"/>
-    <link rel="shortcut icon" type="image/png" href="{{ favicon }}" />
-    <link rel="image_src" href="{{ imageSrc }}" />
-    <link rel="stylesheet" type="text/css" href="{{ mainStyle }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ image.favicon }}" />
+    <link rel="image_src" href="{{ image.imageSrc }}" />
+    <link rel="stylesheet" type="text/css" href="style.min.css" />
     {% for styleURI in stylesCDNs %}
     <link rel="stylesheet" type="text/css" href="{{ styleURI }}" />
     {% endfor %}
@@ -18,9 +18,9 @@
 <div class="container">
 {% block container %}{% endblock %}
 </div>
-{% if inlineSvg %}
+{% if image.inlineSvg %}
 <div style="height: 0; width: 0; position: absolute; visibility: hidden">
-    {% include "../../../build/svg/svg.svg" %}
+    {% include "../../../build/svg/inline.svg" %}
 </div>
 {% endif %}
 !<!--[if lt IE 9]>
@@ -29,6 +29,6 @@
 {% for scriptURI in scriptsCDNs %}
 <script type="text/javascript" src="{{ scriptURI }}"></script>
 {% endfor %}
-<script type="text/javascript" src="{{ mainScript }}"></script>
+<script type="text/javascript" src="script.min.js"></script>
 </body>
 </html>

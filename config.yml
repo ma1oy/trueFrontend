@@ -1,21 +1,38 @@
-sourceDir:    src
-publicDir:    build
-
-lang:         en
-title:        my New document
-description:  Easy frontend
-author:       romanVia
-inlineSvg:    true
-mainMarkup:   index.twig
-mainStyle:    style.css
-mainScript:   main.js
-favicon:      img/favicon.png
-imageSrc:     #img/...
-
+meta:
+  lang:         en
+  title:        New document
+  description:  Easy frontend
+  author:       romanVia
+#-----------------------------------------------------------------------------------------------------------------------
+image:
+  favicon:      img/favicon.png
+  imageSrc:     #img/...
+  inlineSvg:    true
+#-----------------------------------------------------------------------------------------------------------------------
+autoprefixer:
+  browsers:     last 5 versions
+  cascade:      false
+#-----------------------------------------------------------------------------------------------------------------------
+minimization:
+  html:         false
+  css:          true
+  js:           true
+#-----------------------------------------------------------------------------------------------------------------------
+browserSync:
+  server:
+    baseDir:    build
+#    index:      index.htm
+#    directory:  true
+#  tunnel:       true
+#  host:         localhost
+  port:         9000
+  logPrefix:    BROWSER
+#-----------------------------------------------------------------------------------------------------------------------
 stylesCDNs:
   - //fonts.googleapis.com/css?family=Roboto:400,300
   # https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css
   # https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css
+#-----------------------------------------------------------------------------------------------------------------------
 scriptsCDNs:
   # https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js
   # https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js
