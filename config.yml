@@ -1,38 +1,69 @@
+# METADATA FOR PROJECT -------------------------------------------------------------------------------------------------
 meta:
   lang:         en
   title:        New document
   description:  Easy frontend
   author:       romanVia
-#-----------------------------------------------------------------------------------------------------------------------
+
+# IMAGES SETTINGS ------------------------------------------------------------------------------------------------------
 image:
   favicon:      img/favicon.png
   imageSrc:     #img/...
-  inlineSvg:    true
-#-----------------------------------------------------------------------------------------------------------------------
+  inline:       true
+
+# VENDOR PREFIX AUTO ADDING SETTINGS -----------------------------------------------------------------------------------
 autoprefixer:
-  browsers:     last 5 versions
+  browsers:     [last 5 versions, ie8, ie9]
   cascade:      false
-#-----------------------------------------------------------------------------------------------------------------------
+
+# BUILT FILES MINIMIZATION ---------------------------------------------------------------------------------------------
 minimization:
   html:         false
   css:          true
   js:           true
-#-----------------------------------------------------------------------------------------------------------------------
+
+# SERVER STARTING AND BROWSER SYNCHRONIZATION --------------------------------------------------------------------------
 browserSync:
   server:
-    baseDir:    build
-#    index:      index.htm
+    baseDir:    'build/'
+#    index:      pablic.html
 #    directory:  true
 #  tunnel:       true
-#  host:         localhost
-  port:         9000
+#  host:         myhost
+#  port:         9000
   logPrefix:    BROWSER
-#-----------------------------------------------------------------------------------------------------------------------
+
+# CDN REFERENCES FOR STYLES --------------------------------------------------------------------------------------------
 stylesCDNs:
   - //fonts.googleapis.com/css?family=Roboto:400,300
   # https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css
   # https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css
-#-----------------------------------------------------------------------------------------------------------------------
+
+# CDN REFERENCES FOR SCRIPTS -------------------------------------------------------------------------------------------
 scriptsCDNs:
   # https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js
   # https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js
+
+# MAIN FILES NAMES FOR PARSING -----------------------------------------------------------------------------------------
+mainFiles:
+  markup:       index.twig
+  style:        style.scss
+  script:       main.js
+
+# DESTINATION FOLDERS FOR BUILT FILES ----------------------------------------------------------------------------------
+destination:
+  home:         'build/'
+  markup:       '/'
+  style:        '/'
+  script:       '/'
+  images:       'img/'
+  inlineImage:  'imgi/'
+
+# FOLDERS OF SOURCE FILES FOR BUILDING ---------------------------------------------------------------------------------
+source:
+  home:         'src/'
+  markup:       'markup/**/*.twig'
+  styles:       'styles/**/*.scss'
+  scripts:      'scrits/**/*.js'
+  images:       ['images/**/*.*', '!images/inline/**']
+  inlineImages: 'images/inline/**/*.svg'
