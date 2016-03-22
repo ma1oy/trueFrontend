@@ -3,3 +3,5 @@
 /.gulp-scss-cache
 /.sass-cache
 /build
+/public
+/logs
