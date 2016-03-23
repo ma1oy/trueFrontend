@@ -1,3 +1,4 @@
+{% import 'functions.twig' as func %}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ meta.lang }}" lang="{{ meta.lang }}">
 <head>
@@ -9,7 +10,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <link rel="shortcut icon" type="image/png" href="{{ image.favicon }}" />
     <link rel="image_src" href="{{ image.imageSrc }}" />
-    <link rel="stylesheet" type="text/css" href="style.min.css" />
+    <link rel="stylesheet" type="text/css" href="{{func.getFileName(mainFiles.style, 'css', minimization.css)|trim}}" />
     {% for styleURI in stylesCDNs %}
     <link rel="stylesheet" type="text/css" href="{{ styleURI }}" />
     {% endfor %}
@@ -20,15 +21,15 @@
 </div>
 {% if image.inlineSvg %}
 <div style="height: 0; width: 0; position: absolute; visibility: hidden">
-    {% include "../../../build/svg/inline.svg" %}
+    {% include ['..', '..', '..']|merge([image.inlineSvg])|join('/') %}
 </div>
 {% endif %}
-!<!--[if lt IE 9]>
+<!--[if lt IE 9]>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
 <![endif]-->
 {% for scriptURI in scriptsCDNs %}
 <script type="text/javascript" src="{{ scriptURI }}"></script>
 {% endfor %}
-<script type="text/javascript" src="script.min.js"></script>
+<script type="text/javascript" src="{{func.getFileName(mainFiles.script, 'js', minimization.js)|trim}}"></script>
 </body>
 </html>

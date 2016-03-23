@@ -2,10 +2,10 @@
 
 Easy-frontend is an automatic system for build `html`, `svg`, `css`, and `javascript` based projects.
 
-> **Note:** the system uses `twig` and `scss` preprocessors for `html` and `css` building respectively.
+> **Note:** the system uses [`twig`](http://twig.sensiolabs.org/) template engine and [`scss`](http://sass-lang.com/) preprocessor for `html` and `css` building respectively.
 
 ##Features
-* `HTML` templating support (used `Twig`);
+* `HTML` templating support;
 * Auto adding `CSS` vendor prefixes (autoprefixing);
 * `SCSS` preprocessor support and automatic compiling all `SCSS` files into one `CSS`;
 * Inline mapping compiled `CSS` to source style sheets;

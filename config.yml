@@ -1,28 +1,30 @@
-# METADATA FOR PROJECT -------------------------------------------------------------------------------------------------
+# METADATA FOR PROJECT ------------------------------------------------------------------------------------------------
 meta:
   lang:         en
   title:        New document
   description:  Easy frontend
   author:       romanVia
 
-# IMAGES SETTINGS ------------------------------------------------------------------------------------------------------
+# IMAGES SETTINGS -----------------------------------------------------------------------------------------------------
 image:
   favicon:      img/favicon.png
   imageSrc:     #img/...
-  inline:       true
+  inlineSvg:    true
 
-# VENDOR PREFIX AUTO ADDING SETTINGS -----------------------------------------------------------------------------------
+# VENDOR PREFIX AUTO ADDING SETTINGS ----------------------------------------------------------------------------------
 autoprefixer:
-  browsers:     [last 5 versions, ie8, ie9]
+  browsers:     [last 2 versions, ie 8, ie 9]
   cascade:      false
 
-# BUILT FILES MINIMIZATION ---------------------------------------------------------------------------------------------
-minimization:
+# BUILT FILES MINIMIZATION --------------------------------------------------------------------------------------------
+min:
   html:         false
-  css:          true
+  svg:          true
+  css:          false
   js:           true
+  image:        true
 
-# SERVER STARTING AND BROWSER SYNCHRONIZATION --------------------------------------------------------------------------
+# SERVER STARTING AND BROWSER SYNCHRONIZATION -------------------------------------------------------------------------
 browserSync:
   server:
     baseDir:    'build/'
@@ -33,37 +35,37 @@ browserSync:
 #  port:         9000
   logPrefix:    BROWSER
 
-# CDN REFERENCES FOR STYLES --------------------------------------------------------------------------------------------
+# CDN REFERENCES FOR STYLES -------------------------------------------------------------------------------------------
 stylesCDNs:
   - //fonts.googleapis.com/css?family=Roboto:400,300
   # https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css
   # https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css
 
-# CDN REFERENCES FOR SCRIPTS -------------------------------------------------------------------------------------------
+# CDN REFERENCES FOR SCRIPTS ------------------------------------------------------------------------------------------
 scriptsCDNs:
   # https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js
   # https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js
 
-# MAIN FILES NAMES FOR PARSING -----------------------------------------------------------------------------------------
+# MAIN FILES FOR PARSING ----------------------------------------------------------------------------------------------
 mainFiles:
   markup:       index.twig
   style:        style.scss
   script:       main.js
 
-# DESTINATION FOLDERS FOR BUILT FILES ----------------------------------------------------------------------------------
-destination:
-  home:         'build/'
-  markup:       '/'
-  style:        '/'
-  script:       '/'
-  images:       'img/'
-  inlineImage:  'imgi/'
+# DESTINATION FOLDERS FOR BUILT FILES ---------------------------------------------------------------------------------
+dest:
+  public:       'public'
+  build:        'build'
+  markup:       'build'
+  style:        'build'
+  script:       'build'
+  image:        'build/img'
+  inlineSvg:    'build/imgi'
 
-# FOLDERS OF SOURCE FILES FOR BUILDING ---------------------------------------------------------------------------------
-source:
-  home:         'src/'
-  markup:       'markup/**/*.twig'
-  styles:       'styles/**/*.scss'
-  scripts:      'scrits/**/*.js'
-  images:       ['images/**/*.*', '!images/inline/**']
-  inlineImages: 'images/inline/**/*.svg'
+# FOLDERS OF SOURCE FILES FOR BUILDING --------------------------------------------------------------------------------
+src:
+  markup:       'src/markup/**/*.twig'
+  style:        'src/styles/**/*.scss'
+  script:       'src/scripts/**/*.js'
+  image:        ['src/images/**/*.*', '!src/images/inline/**']
+  inlineSvg:    'src/images/inline/**/*.svg'
