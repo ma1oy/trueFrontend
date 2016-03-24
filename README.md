@@ -2,7 +2,7 @@
 
 Easy-frontend is an automatic system for build `html`, `svg`, `css`, and `javascript` based projects.
 
-> **Note:** the system uses [`twig`](http://twig.sensiolabs.org/) template engine and [`scss`](http://sass-lang.com/) preprocessor for `html` and `css` building respectively.
+> **Note:** the system uses [`twig`](http://twig.sensiolabs.org/) template engine, [`scss`](http://sass-lang.com/) preprocessor and [`ES6`](http://www.ecma-international.org/ecma-262/6.0/) compiler [`Balel`](https://babeljs.io/) for `html`, `css` and `js` building respectively.
 
 ##Features
 * `HTML` templating support;
@@ -17,22 +17,25 @@ Easy-frontend is an automatic system for build `html`, `svg`, `css`, and `javasc
 
 ##How to install?
 
-If you do not have `git`, `nodejs` and `npm` you must install them first.
-
-> **Important:** you need `nodejs v0.10.25` and higher to work.
-
-To check the version of your `nodejs`:
-
-```sh
-$ nodejs -v
-```
+If you do not have `git`, `nodejs`, `npm` and `gulp` you must install them first.
 
 To update `nodejs`:
 
 ```sh
 $ sudo npm cache clean -f
-$ sudo npm install -g n
+$ sudo npm i n -g
 $ sudo n stable
+```
+
+To update `npm`:
+```sh
+$ sudo npm i npm -g
+```
+
+To update / install `gulp`:
+```sh
+$ sudo npm uinstall gulp -g
+$ sudo npm i gulpjs/gulp-cli#4.0 -g
 ```
 
 Type the following commands at the command line from your project directory:
@@ -43,19 +46,17 @@ Type the following commands at the command line from your project directory:
     $ git clone https://github.com/romanVia/easy-frontend.git
     ```
 
-2. **Instal `gulp` globally:**
+2. **Install `gulp` locally:**
 
     ```sh
-    $ npm install --global gulp
+    $ npm i gulpjs/gulp#4.0 -D
     ```
 
 3. **Install packages:**
 
     ```sh
-    $ npm install --save-dev
+    $ npm i -D
     ```
-
-> **Note:** for points 2 and 3 you can use shorthand: `npm i -g gulp -D`
 
 ##How to use?
 
