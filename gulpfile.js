@@ -23,28 +23,40 @@ var gulp        = require('gulp'),
 
 var configFile  = 'config.yml',
     config      = YAML.load(configFile),
-    watch       = config.src,
-    dest        = config.dest,
-    src         = {},
-    min         = config.min;//.build;
+    dest = {}, src = {}, watch = {};
 
-for (var key in watch) {
-    if (watch.hasOwnProperty(key)) {
-        src[key] = config.mainFiles.hasOwnProperty(key) ?
-            watch[key].split('*')[0] + config.mainFiles[key] : watch[key];
+function configUpdate() {
+    config      = YAML.load(configFile);
+    dest    = config.dest;
+    src     = {};
+    watch   = config.src;
+    var mf  = config.mainFiles;
+
+    for (var key in watch) { // Get full paths to main files
+        if (watch.hasOwnProperty(key)) {
+            src[key] = mf.hasOwnProperty(key) ?
+            watch[key].split('*')[0] + mf[key] : watch[key];
+        }
+    }
+
+    if (config.image.inlineSvg) { // Get full path to inline svg image
+        var temp = watch.inlineSvg.split('/*');
+        config.image.inlineSvg = dest.inlineSvg + (dest.inlineSvg.split('/').pop() ? '/' : '') +
+            temp[0].split('/').pop() + temp.pop();
     }
 }
-if (config.image.inlineSvg) {
-    var temp = src.inlineSvg.split('/*');
-    config.image.inlineSvg = dest.inlineSvg + (dest.inlineSvg.split('/').pop() ? '/' : '') +
-        temp[0].split('/').pop() + temp.pop();
-}
+configUpdate();
+
+// CONFIG UPDATE TASK
+gulp.task('config:update', function(done) {
+    configUpdate();
+    done();
+});
 
 // SVG BUILD TASK
 gulp.task('svg:build', function() {
-    return gulp
-        .src(src.inlineSvg)
-        .pipe(gulpif(config.min.svg, svgmin()))                         // svg minimization
+    return gulp.src(src.inlineSvg)
+        .pipe(gulpif(config.min.svg, svgmin()))
         .pipe(rename(function (path) {          // Rename files for beauty id's
             var name = path.dirname.split(path.sep);
             name[0] == '.' ? name.shift() : true;
@@ -52,40 +64,37 @@ gulp.task('svg:build', function() {
             path.basename = name.join('-');
         }))
         .pipe(svgstore({ inlineSvg: true }))    // svg concatenation into symbols
-        .pipe(gulp.dest(dest.inlineSvg));     // Save to build path
+        .pipe(gulp.dest(dest.inlineSvg));
 });
 
-// HTML BUILD WITH INLINE SVG TASK
-gulp.task('html:build', ['svg:build'], function() {
-    gulp
-        .src(src.markup)
-        .pipe(twig({ data: config }))
-        .pipe(gulpif(config.min.html, htmlmin({ collapseWhitespace: true })))
-        .pipe(gulp.dest(dest.markup));          // Save to build path
-    del([dest.inlineSvg]);                      // Remove svg build folder
-});
+// HTML BUILD TASK
+gulp.task('html:build', gulp.series('svg:build', function() {
+    return gulp.src(src.markup)
+        .pipe(twig({data: config}))
+        .pipe(gulpif(config.min.html, htmlmin({collapseWhitespace: true})))
+        .pipe(gulp.dest(dest.markup));
+}, function() { return del([dest.inlineSvg]) }));
 
 // IMAGE BUILD TASK
 gulp.task('img:build', function() {
-    gulp.src(src.image)
-        .pipe(gulpif(config.min.image, imagemin({                        // Images minimization
+    return gulp.src(src.image)
+        .pipe(gulpif(config.min.image, imagemin({
             progressive: true,
             svgoPlugins: [{ removeViewBox: false }],
             use: [pngquant()],
             interlaced: true
         })))
-        .pipe(gulp.dest(dest.image));         // Save to build path
+        .pipe(gulp.dest(dest.image));
 });
 
-gulp.task('scss:copy', function() {
-    gulp.src(watch.style)
-        .pipe(gulp.dest(dest.build + 'source/'))
-});
-
+// gulp.task('scss:copy', function() {
+//     gulp.src(watch.style)
+//         .pipe(gulp.dest(dest.build + 'source/'))
+// });
+//
 // CSS BUILD TASK
 gulp.task('css:build', function() {
     return gulp.src(src.style)
-        // .pipe(gulp.dest(dest.style + 'source'))
         .pipe(sourcemaps.init())                // Maps initialization
         .pipe(scss())                           // scss compile
         .pipe(prefixer(config.autoprefixer))
@@ -97,12 +106,12 @@ gulp.task('css:build', function() {
 
 // CSS CLEAN TASK
 gulp.task('css:clean', function() {
-    del(['.gulp-scss-cache', '.sass-cache']);
+    return del(['.gulp-scss-cache', '.sass-cache']);
 });
 
 // JS BUILD TASK
 gulp.task('js:build', function() {
-    gulp.src(src.script)
+    return gulp.src(src.script)
         .pipe(rigger())                         // Add dependent files
         .pipe(sourcemaps.init())                // Maps initialization
         .pipe(gulpif(config.min.js, uglify()))
@@ -113,23 +122,11 @@ gulp.task('js:build', function() {
 
 // CLEAN TASK
 gulp.task('clean', function() {
-    del(dest.build);
+    return del(dest.build);
 });
 
-// CONFIG UPDATE TASK
-gulp.task('config:update', function() {
-    config = YAML.load(configFile);
-});
-
-// PREBUILD TASK
-gulp.task('prebuild', ['css:build', 'js:build', 'img:build']);
-
-// REBUILD TASK
-gulp.task('rebuild', ['prebuild'], function() {
-    gulp.start('html:build');
-});
-
-gulp.task('build', ['clean', 'rebuild']);
+// BUILD TASK
+gulp.task('build', gulp.series(gulp.parallel('css:build', 'js:build', 'img:build'), 'html:build'));
 
 // SERVER AND BROWSER TASK
 gulp.task('sync', function () {
@@ -137,18 +134,14 @@ gulp.task('sync', function () {
 });
 
 // WATCH TASK
-gulp.task('watch', function(){
-    // gulp.watch(configFile, ['config:update', 'build', browserSync.reload]);
-    // gulp.watch(configFile).on('change', function() {
-    //     config = YAML.load(configFile);
-    //     gulp.start('build');
-    //     browserSync.reload();
-    // });
-    gulp.watch([watch.markup, watch.inlineSvg], ['html:build', browserSync.reload]);
-    gulp.watch(watch.style, ['css:build', browserSync.reload]);
-    gulp.watch(watch.script, ['js:build', browserSync.reload]);
-    gulp.watch(watch.image, ['img:build', browserSync.reload]);
+gulp.task('watch', function(done) {
+    gulp.watch(configFile, gulp.series('config:update', 'build', browserSync.reload));
+    gulp.watch([watch.markup, watch.inlineSvg], gulp.series('html:build', browserSync.reload));
+    gulp.watch(watch.style, gulp.series('css:build', browserSync.reload));
+    gulp.watch(watch.script, gulp.series('js:build', browserSync.reload));
+    gulp.watch(watch.image, gulp.series('img:build', browserSync.reload));
+    done();
 });
 
 // DEFAULT TASK
-gulp.task('default', ['build', 'sync', 'watch']);
+gulp.task('default', gulp.parallel(gulp.series('build', 'sync'), 'watch'));
