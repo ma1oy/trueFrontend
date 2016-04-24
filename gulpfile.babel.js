@@ -22,21 +22,23 @@ var configFile  = 'config.yml',
     config      = YAML.load(configFile),
     $ = {}, dest = {}, src = {}, watch = {};
 
-Object.keys(require('./package.json')['devDependencies'])
-    .forEach(function (pkg) {
-        $[pkg.replace('gulp-', '').replace(/-[a-z]/g, function(str, offs, s) {
-            return s[++offs].toUpperCase();
+Object.keys(require('./package.json')['devDependencies']).forEach((pkg) => {
+        $[pkg.replace('gulp-', '').replace(/-[a-z]/g, (_, ofs, str) => {
+            return str[++ofs].toUpperCase();
         })] = require(pkg);
     });
 
-var reload = function(done) { $.browserSync.reload(); done() };
+function reload(done) {
+    $.browserSync.reload();
+    done()
+}
 
-function cfgUpdate(done) {
-    config      = YAML.load(configFile);
-    dest    = config.dest;
-    src     = {};
-    watch   = config.src;
-    var mf  = config.mainFiles;
+function initcf(done) {
+    config = YAML.load(configFile);
+    dest   = config.dest;
+    src    = {};
+    watch  = config.src;
+    var mf = config.mainFiles;
 
     for (var key in watch) { // Get full paths to main files
         if (watch.hasOwnProperty(key)) {
@@ -53,10 +55,10 @@ function cfgUpdate(done) {
     done();
 }
 
-cfgUpdate(function() {});
+initcf(function() {});
 
 // SVG BUILD TASK
-gulp.task('build:svg', function() {
+gulp.task('build:svg', () => {
     return gulp.src(src.inlineSvg)
         .pipe($.if(config.min.svg, $.svgmin()))
         .pipe($.rename(function (path) { // Rename files for beauty id's
@@ -70,15 +72,15 @@ gulp.task('build:svg', function() {
 });
 
 // HTML BUILD TASK
-gulp.task('build:html', gulp.series('build:svg', function() {
+gulp.task('build:html', gulp.series('build:svg', () => {
     return gulp.src(src.markup)
         .pipe($.twig({data: config}))
         .pipe($.if(config.min.html, $.htmlmin({collapseWhitespace: true})))
         .pipe(gulp.dest(dest.markup));
-}, function() { return $.del([dest.inlineSvg]) }));
+}, () => { return $.del([dest.inlineSvg]) }));
 
 // IMAGE BUILD TASK
-gulp.task('build:img', function() {
+gulp.task('build:img', () => {
     return gulp.src(src.image)
         .pipe($.if(config.min.image, $.imagemin({
             progressive: true,
@@ -90,7 +92,7 @@ gulp.task('build:img', function() {
 });
 
 // CSS BUILD TASK
-gulp.task('build:css', function() {
+gulp.task('build:css', () => {
     return gulp.src(src.style)
         .pipe($.sourcemaps.init())
         .pipe($.sass().on('error', $.sass.logError))
@@ -102,7 +104,7 @@ gulp.task('build:css', function() {
 });
 
 // JS BUILD TASK
-gulp.task('build:js', function() {
+gulp.task('build:js', () => {
     return gulp.src(src.script)
         .pipe($.rigger()) // Add dependent files
         .pipe($.sourcemaps.init())
@@ -113,7 +115,7 @@ gulp.task('build:js', function() {
 });
 
 // CLEAN TASK
-gulp.task('clean', function(done) {
+gulp.task('clean', (done) => {
     $.del(dest.build);
     done();
 });
@@ -122,19 +124,19 @@ gulp.task('clean', function(done) {
 gulp.task('build', gulp.series(gulp.parallel('build:css', 'build:js', 'build:img'), 'build:html'));
 
 // SERVER AND BROWSER TASK
-gulp.task('sync', function (done) {
+gulp.task('sync', (done) => {
     $.browserSync.init(config.browserSync);
     done();
 });
 
 // WATCH TASK
-gulp.task('watch', function(done) {
+gulp.task('watch', (done) => {
     gulp.watch([watch.markup,
-                watch.inlineSvg], gulp.series('build:html', reload));
-    gulp.watch( watch.style,      gulp.series('build:css',  reload));
-    gulp.watch( watch.script,     gulp.series('build:js',   reload));
-    gulp.watch( watch.image,      gulp.series('build:img',  reload));
-    gulp.watch( configFile, gulp.series(cfgUpdate, 'build', reload));
+                watch.inlineSvg], gulp.series(  'build:html', reload));
+    gulp.watch( watch.style,      gulp.series(  'build:css',  reload));
+    gulp.watch( watch.script,     gulp.series(  'build:js',   reload));
+    gulp.watch( watch.image,      gulp.series(  'build:img',  reload));
+    gulp.watch( configFile, gulp.series(initcf, 'build',      reload));
     done();
 });
 

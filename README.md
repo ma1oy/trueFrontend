@@ -1,4 +1,4 @@
-#EASY-FRONTEND
+#TRUE_FRONTEND
 
 Easy-frontend is an automatic system for build `html`, `svg`, `css`, and `javascript` based projects.
 
@@ -38,7 +38,7 @@ $ sudo npm i npm -g
 
 To update / install `gulp`:
 ```sh
-$ sudo npm uinstall gulp -g
+$ sudo npm uninstall gulp -g
 $ sudo npm i gulpjs/gulp-cli#4.0 -g
 ```
 
@@ -70,11 +70,11 @@ Run `gulp` with the following commands:
 
 ####General commands
 
+- **`default`** _or without command_ - build a project, launch a browser and start watching for source files' changes;
 - **`build`** - build a whole project into `destination:home` folder;
 - **`clean`** - remove `destination:home` folder and **all files** in it;
 - **`sync`** - start a server, launch a browser and synchronize it with index file `mainFiles:markup`;
-- **`watch`** - start watching for source files' changes from `source:home` folder;
-- **`default`** _or without command_ - build a project, launch a browser and start watching for source files' changes.
+- **`watch`** - start watching for source files' changes from `source:home` folder.
 
 ####Additional commands
 
