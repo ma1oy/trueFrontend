@@ -1,22 +1,20 @@
 'use strict';
-// del         - Files remove
-// gulpif      - Add some logic to pipes
-// twig        - twig parser
-// htmlmin     - html minimization
-// svgstore    - svg concatenation into symbol tags
-// svgmin      - svg minimization
-// rename      - File rename (for svg's id's)
-// rigger      - Files including (//= path/name)
-// prefixer    - Automatic adding prefix for CSS rules
-// uglify      - js minimization
-// scss        - SASS parser
-// sourcemaps  - Source maps for SASS
-// cssmin      - CSS minimization
-// imagemin    - Image minimization
-// pngquant    - Lossy compression of PNG images
-// browserSync - Browser synchronization
-//?concat      - File concatenation ["gulp-concat": "^2.6.0"]
-//?es          - ["event-stream": "^3.3.2"]
+// del              - Files remove
+// gulpif           - Add some logic to pipes
+// twig             - twig parser
+// htmlmin          - html minimization
+// svgstore         - svg concatenation into symbol tags
+// svgmin           - svg minimization
+// rename           - File rename (for svg's id's)
+// rigger           - Files including (//= path/name)
+// prefixer         - Automatic adding prefix for CSS rules
+// uglify           - js minimization
+// scss             - SASS parser
+// sourcemaps       - Source maps for SASS
+// cleanCss         - CSS minimization
+// imagemin         - Image minimization
+// imageminPngquant - Lossy compression of PNG images
+// browserSync      - Browser synchronization
 
 var configFile  = 'config.yml',
     gulp        = require('gulp'),
@@ -30,9 +28,10 @@ Object.keys(require('./package.json')['devDependencies'])
             return s[++offs].toUpperCase();
         })] = require(pkg);
     });
-var reload = $.browserSync.reload;
 
-function configUpdate() {
+var reload = function(done) { $.browserSync.reload(); done() };
+
+function cfgUpdate(done) {
     config      = YAML.load(configFile);
     dest    = config.dest;
     src     = {};
@@ -50,17 +49,14 @@ function configUpdate() {
         config.image.inlineSvg =
             dest.inlineSvg + (dest.inlineSvg.split('/').pop() ? '/' : '') + temp[0].split('/').pop() + temp.pop();
     }
-}
-configUpdate();
 
-// CONFIG UPDATE TASK
-gulp.task('config:update', function(done) {
-    configUpdate();
     done();
-});
+}
+
+cfgUpdate(function() {});
 
 // SVG BUILD TASK
-gulp.task('svg:build', function() {
+gulp.task('build:svg', function() {
     return gulp.src(src.inlineSvg)
         .pipe($.if(config.min.svg, $.svgmin()))
         .pipe($.rename(function (path) { // Rename files for beauty id's
@@ -74,7 +70,7 @@ gulp.task('svg:build', function() {
 });
 
 // HTML BUILD TASK
-gulp.task('html:build', gulp.series('svg:build', function() {
+gulp.task('build:html', gulp.series('build:svg', function() {
     return gulp.src(src.markup)
         .pipe($.twig({data: config}))
         .pipe($.if(config.min.html, $.htmlmin({collapseWhitespace: true})))
@@ -82,7 +78,7 @@ gulp.task('html:build', gulp.series('svg:build', function() {
 }, function() { return $.del([dest.inlineSvg]) }));
 
 // IMAGE BUILD TASK
-gulp.task('img:build', function() {
+gulp.task('build:img', function() {
     return gulp.src(src.image)
         .pipe($.if(config.min.image, $.imagemin({
             progressive: true,
@@ -94,7 +90,7 @@ gulp.task('img:build', function() {
 });
 
 // CSS BUILD TASK
-gulp.task('css:build', function() {
+gulp.task('build:css', function() {
     return gulp.src(src.style)
         .pipe($.sourcemaps.init())
         .pipe($.sass().on('error', $.sass.logError))
@@ -106,7 +102,7 @@ gulp.task('css:build', function() {
 });
 
 // JS BUILD TASK
-gulp.task('js:build', function() {
+gulp.task('build:js', function() {
     return gulp.src(src.script)
         .pipe($.rigger()) // Add dependent files
         .pipe($.sourcemaps.init())
@@ -117,25 +113,28 @@ gulp.task('js:build', function() {
 });
 
 // CLEAN TASK
-gulp.task('clean', function() {
-    return $.del(dest.build);
+gulp.task('clean', function(done) {
+    $.del(dest.build);
+    done();
 });
 
 // BUILD TASK
-gulp.task('build', gulp.series(gulp.parallel('css:build', 'js:build', 'img:build'), 'html:build'));
+gulp.task('build', gulp.series(gulp.parallel('build:css', 'build:js', 'build:img'), 'build:html'));
 
 // SERVER AND BROWSER TASK
-gulp.task('sync', function () {
+gulp.task('sync', function (done) {
     $.browserSync.init(config.browserSync);
+    done();
 });
 
 // WATCH TASK
 gulp.task('watch', function(done) {
-    gulp.watch(configFile, gulp.series('config:update', 'build', reload));
-    gulp.watch([watch.markup, watch.inlineSvg], gulp.series('html:build', reload));
-    gulp.watch(watch.style, gulp.series('css:build', reload));
-    gulp.watch(watch.script, gulp.series('js:build', reload));
-    gulp.watch(watch.image, gulp.series('img:build', reload));
+    gulp.watch([watch.markup,
+                watch.inlineSvg], gulp.series('build:html', reload));
+    gulp.watch( watch.style,      gulp.series('build:css',  reload));
+    gulp.watch( watch.script,     gulp.series('build:js',   reload));
+    gulp.watch( watch.image,      gulp.series('build:img',  reload));
+    gulp.watch( configFile, gulp.series(cfgUpdate, 'build', reload));
     done();
 });
 

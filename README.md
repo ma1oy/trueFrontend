@@ -78,11 +78,11 @@ Run `gulp` with the following commands:
 
 ####Additional commands
 
-- **`html:build`** - parse all `twig` templates from `source:markup` folder and all inline `svg` images files from `source:inlineSvg` folder while the option `image:inlineSvg` is `true`, combine them into `mainFiles:markup` file and put it into `destination:markup` folder;
-- **`css:build`** - parse all `scss` files from `source:style` folder, combine them into `mainFiles:style` file and put it into `destination:style` folder;
-- **`js:build`** - parse all `js` files from `source:script` folder, combine them into `mainFiles:script` file and put it into `destination:script` folder;
-- **`img:build`** - get all images from `source:image` folder, compress and put it into `destination:image` folder;
-- **`svg:build`** - parse all `svg` files from `source:inlineSvg` folder, combine them into one with `<symbol>` elements and put it into `destination:inlineSvg` folder.
+- **`build:html`** - parse all `twig` templates from `source:markup` folder and all inline `svg` images files from `source:inlineSvg` folder while the option `image:inlineSvg` is `true`, combine them into `mainFiles:markup` file and put it into `destination:markup` folder;
+- **`build:css`** - parse all `scss` files from `source:style` folder, combine them into `mainFiles:style` file and put it into `destination:style` folder;
+- **`build:js`** - parse all `js` files from `source:script` folder, combine them into `mainFiles:script` file and put it into `destination:script` folder;
+- **`build:img`** - get all images from `source:image` folder, compress and put it into `destination:image` folder;
+- **`build:svg`** - parse all `svg` files from `source:inlineSvg` folder, combine them into one with `<symbol>` elements and put it into `destination:inlineSvg` folder.
 
 ##Settings
 You can find all system settings with the detailed description in `config.yml` file.
