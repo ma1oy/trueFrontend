@@ -10,7 +10,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <link rel="shortcut icon" type="image/png" href="{{ image.favicon }}" />
     <link rel="image_src" href="{{ image.imageSrc }}" />
-    <link rel="stylesheet" type="text/css" href="{{func.getFileName(mainFiles.style, 'css', minimization.css)|trim}}" />
+    <link rel="stylesheet" type="text/css" href="{{func.getFileName(mainFiles.style, 'css', min.css)|trim}}" />
     {% for styleURI in stylesCDNs %}
     <link rel="stylesheet" type="text/css" href="{{ styleURI }}" />
     {% endfor %}
@@ -30,6 +30,6 @@
 {% for scriptURI in scriptsCDNs %}
 <script type="text/javascript" src="{{ scriptURI }}"></script>
 {% endfor %}
-<script type="text/javascript" src="{{func.getFileName(mainFiles.script, 'js', minimization.js)|trim}}"></script>
+<script type="text/javascript" src="{{func.getFileName(mainFiles.script, 'js', min.js)|trim}}"></script>
 </body>
 </html>

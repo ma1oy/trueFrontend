@@ -41,15 +41,14 @@ function configUpdate() {
 
     for (var key in watch) { // Get full paths to main files
         if (watch.hasOwnProperty(key)) {
-            src[key] = mf.hasOwnProperty(key) ?
-            watch[key].split('*')[0] + mf[key] : watch[key];
+            src[key] = mf.hasOwnProperty(key) ? watch[key].split('*')[0] + mf[key] : watch[key];
         }
     }
 
     if (config.image.inlineSvg) { // Get full path to inline svg image
         var temp = watch.inlineSvg.split('/*');
-        config.image.inlineSvg = dest.inlineSvg + (dest.inlineSvg.split('/').pop() ? '/' : '') +
-            temp[0].split('/').pop() + temp.pop();
+        config.image.inlineSvg =
+            dest.inlineSvg + (dest.inlineSvg.split('/').pop() ? '/' : '') + temp[0].split('/').pop() + temp.pop();
     }
 }
 configUpdate();
@@ -94,26 +93,16 @@ gulp.task('img:build', function() {
         .pipe(gulp.dest(dest.image));
 });
 
-// gulp.task('scss:copy', function() {
-//     gulp.src(watch.style)
-//         .pipe(gulp.dest(dest.build + 'source/'))
-// });
-
 // CSS BUILD TASK
 gulp.task('css:build', function() {
     return gulp.src(src.style)
         .pipe($.sourcemaps.init())
-        .pipe($.scss())
+        .pipe($.sass().on('error', $.sass.logError))
         .pipe($.autoprefixer(config.autoprefixer))
         .pipe($.if(config.min.css, $.cleanCss()))
         .pipe($.if(config.min.css, $.rename({ suffix: '.min' })))
-        .pipe($.sourcemaps.write('.'))
+        .pipe($.sourcemaps.write(dest.map))
         .pipe(gulp.dest(dest.style));
-});
-
-// CSS CLEAN TASK
-gulp.task('css:clean', function() {
-    return $.del(['.gulp-scss-cache', '.sass-cache']);
 });
 
 // JS BUILD TASK
@@ -123,7 +112,7 @@ gulp.task('js:build', function() {
         .pipe($.sourcemaps.init())
         .pipe($.if(config.min.js, $.uglify()))
         .pipe($.if(config.min.js, $.rename({ suffix: '.min' })))
-        .pipe($.sourcemaps.write())
+        .pipe($.sourcemaps.write(dest.map))
         .pipe(gulp.dest(dest.script));
 });
 

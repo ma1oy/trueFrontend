@@ -8,7 +8,7 @@ Easy-frontend is an automatic system for build `html`, `svg`, `css`, and `javasc
 * `HTML` templating support;
 * Auto adding `CSS` vendor prefixes (autoprefixing);
 * `SCSS` preprocessor support and automatic compiling all `SCSS` files into one `CSS`;
-* Inline mapping compiled `CSS` to source style sheets;
+* `CSS` and `JS` mapping;
 * Inline `SVG` creation and embedding;
 * Built files minimization;
 * Browser synchronization and livereload;
@@ -17,7 +17,11 @@ Easy-frontend is an automatic system for build `html`, `svg`, `css`, and `javasc
 
 ##How to install?
 
+####Basic installation
+
 If you do not have `git`, `nodejs`, `npm` and `gulp` you must install them first.
+
+> **Recomended:** if the above technologies are already installed it is highly recommended to update them.
 
 To update `nodejs`:
 
@@ -38,6 +42,8 @@ $ sudo npm uinstall gulp -g
 $ sudo npm i gulpjs/gulp-cli#4.0 -g
 ```
 
+####Main installation
+
 Type the following commands at the command line from your project directory:
 
 1. **Clone this repo:**
@@ -52,7 +58,7 @@ Type the following commands at the command line from your project directory:
     $ npm i gulpjs/gulp#4.0 -D
     ```
 
-3. **Install packages:**
+3. **Install `npm` packages:**
 
     ```sh
     $ npm i -D
@@ -64,22 +70,19 @@ Run `gulp` with the following commands:
 
 ####General commands
 
-- **`build`** - build the whole project into `destination:home` folder;
-- **`rebuild`** - remove `destination:home` folder and build the project again;
-- **`prebuild`** - build only _images_, _styles_ and _scripts_, but not _markup_ and _inline images_;
+- **`build`** - build a whole project into `destination:home` folder;
+- **`clean`** - remove `destination:home` folder and **all files** in it;
+- **`sync`** - start a server, launch a browser and synchronize it with index file `mainFiles:markup`;
+- **`watch`** - start watching for source files' changes from `source:home` folder;
 - **`default`** _or without command_ - build a project, launch a browser and start watching for source files' changes.
 
 ####Additional commands
 
 - **`html:build`** - parse all `twig` templates from `source:markup` folder and all inline `svg` images files from `source:inlineSvg` folder while the option `image:inlineSvg` is `true`, combine them into `mainFiles:markup` file and put it into `destination:markup` folder;
 - **`css:build`** - parse all `scss` files from `source:style` folder, combine them into `mainFiles:style` file and put it into `destination:style` folder;
-- **`css:clean`** - remove `scss` preprocessor's cache;
 - **`js:build`** - parse all `js` files from `source:script` folder, combine them into `mainFiles:script` file and put it into `destination:script` folder;
 - **`img:build`** - get all images from `source:image` folder, compress and put it into `destination:image` folder;
-- **`svg:build`** - parse all `svg` files from `source:inlineSvg` folder, combine them into one with `<symbol>` elements and put it into `destination:inlineSvg` folder;
-- **`clean`** - remove `destination:home` folder and **all files** in it;
-- **`sync`** - start the server, launch the browser and synchronize it with index file `mainFiles:markup`;
-- **`watch`** - start watching for source files' changes from `source:home` folder.
+- **`svg:build`** - parse all `svg` files from `source:inlineSvg` folder, combine them into one with `<symbol>` elements and put it into `destination:inlineSvg` folder.
 
 ##Settings
 You can find all system settings with the detailed description in `config.yml` file.
