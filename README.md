@@ -2,7 +2,7 @@
 
 Easy-frontend is an automatic system for build `html`, `svg`, `css`, and `javascript` based projects.
 
-> **Note:** the system uses [`twig`](http://twig.sensiolabs.org/) template engine, [`scss`](http://sass-lang.com/) preprocessor and [`ES6`](http://www.ecma-international.org/ecma-262/6.0/) compiler [`Balel`](https://babeljs.io/) for `html`, `css` and `js` building respectively.
+> **Note:** the system uses [`twig`](http://twig.sensiolabs.org/) template engine, [`scss`](http://sass-lang.com/) preprocessor and [`ES2015`](http://www.ecma-international.org/ecma-262/6.0/) compiler called [`Balel`](https://babeljs.io/) for `html`, `css` and `js` building respectively.
 
 ##Features
 * `HTML` templating support;

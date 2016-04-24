@@ -1,2 +1,6 @@
-// Use //= construction to include parts
-alert('done!!!');
+function itIsWork() {
+    let print = 'It is work!';
+    return print.toUpperCase();
+}
+
+console.log(itIsWork());

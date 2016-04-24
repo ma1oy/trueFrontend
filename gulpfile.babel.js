@@ -1,4 +1,5 @@
 'use strict';
+// babel            - For ES2015 compiling
 // del              - Files remove
 // gulpif           - Add some logic to pipes
 // twig             - twig parser
@@ -6,7 +7,6 @@
 // svgstore         - svg concatenation into symbol tags
 // svgmin           - svg minimization
 // rename           - File rename (for svg's id's)
-// rigger           - Files including (//= path/name)
 // prefixer         - Automatic adding prefix for CSS rules
 // uglify           - js minimization
 // scss             - SASS parser
@@ -16,11 +16,11 @@
 // imageminPngquant - Lossy compression of PNG images
 // browserSync      - Browser synchronization
 
-var configFile  = 'config.yml',
-    gulp        = require('gulp'),
-    YAML        = require('yamljs'),
-    config      = YAML.load(configFile),
-    $ = {}, dest = {}, src = {}, watch = {};
+const cdir = 'config.yml',
+      gulp = require('gulp'),
+      YAML = require('yamljs');
+var   conf = YAML.load(cdir), $ = {}, dest = {}, src = {}, watch = {}, data = {};
+const plg  = conf.plg;
 
 Object.keys(require('./package.json')['devDependencies']).forEach((pkg) => {
         $[pkg.replace('gulp-', '').replace(/-[a-z]/g, (_, ofs, str) => {
@@ -33,36 +33,36 @@ function reload(done) {
     done()
 }
 
-function initcf(done) {
-    config = YAML.load(configFile);
-    dest   = config.dest;
-    src    = {};
-    watch  = config.src;
-    var mf = config.mainFiles;
+function cinit(done) {
+    conf  = YAML.load(cdir);
+    dest  = conf.dir.dest;
+    watch = conf.dir.src;
+    data  = conf.prj;
+    let m = data.mainFiles;
 
-    for (var key in watch) { // Get full paths to main files
+    for (let key in watch) { // Get full paths to main files
         if (watch.hasOwnProperty(key)) {
-            src[key] = mf.hasOwnProperty(key) ? watch[key].split('*')[0] + mf[key] : watch[key];
+            src[key] = m.hasOwnProperty(key) ? watch[key].split('*')[0] + m[key] : watch[key];
         }
     }
 
-    if (config.image.inlineSvg) { // Get full path to inline svg image
-        var temp = watch.inlineSvg.split('/*');
-        config.image.inlineSvg =
+    if (data.image.inlineSvg) { // Get full path to inline svg image
+        let temp = watch.inlineSvg.split('/*');
+        data.image.inlineSvg =
             dest.inlineSvg + (dest.inlineSvg.split('/').pop() ? '/' : '') + temp[0].split('/').pop() + temp.pop();
     }
 
     done();
 }
 
-initcf(function() {});
+cinit(function() {});
 
 // SVG BUILD TASK
 gulp.task('build:svg', () => {
     return gulp.src(src.inlineSvg)
-        .pipe($.if(config.min.svg, $.svgmin()))
+        .pipe($.if(data.min.svg, $.svgmin()))
         .pipe($.rename(function (path) { // Rename files for beauty id's
-            var name = path.dirname.split(path.sep);
+            let name = path.dirname.split(path.sep);
             name[0] == '.' ? name.shift() : true;
             name.push(path.basename);
             path.basename = name.join('-');
@@ -74,15 +74,15 @@ gulp.task('build:svg', () => {
 // HTML BUILD TASK
 gulp.task('build:html', gulp.series('build:svg', () => {
     return gulp.src(src.markup)
-        .pipe($.twig({data: config}))
-        .pipe($.if(config.min.html, $.htmlmin({collapseWhitespace: true})))
+        .pipe($.twig({data: data}))
+        .pipe($.if(data.min.html, $.htmlmin({collapseWhitespace: true})))
         .pipe(gulp.dest(dest.markup));
 }, () => { return $.del([dest.inlineSvg]) }));
 
 // IMAGE BUILD TASK
 gulp.task('build:img', () => {
     return gulp.src(src.image)
-        .pipe($.if(config.min.image, $.imagemin({
+        .pipe($.if(data.min.image, $.imagemin({
             progressive: true,
             svgoPlugins: [{ removeViewBox: false }],
             use: [$.imageminPngquant()],
@@ -96,21 +96,21 @@ gulp.task('build:css', () => {
     return gulp.src(src.style)
         .pipe($.sourcemaps.init())
         .pipe($.sass().on('error', $.sass.logError))
-        .pipe($.autoprefixer(config.autoprefixer))
-        .pipe($.if(config.min.css, $.cleanCss()))
-        .pipe($.if(config.min.css, $.rename({ suffix: '.min' })))
-        .pipe($.sourcemaps.write(dest.map))
+        .pipe($.autoprefixer(plg.autoprefixer))
+        .pipe($.if(data.min.css, $.cleanCss()))
+        .pipe($.if(data.min.css, $.rename({ suffix: '.min' })))
+        .pipe($.sourcemaps.write(dest.sourceMap))
         .pipe(gulp.dest(dest.style));
 });
 
 // JS BUILD TASK
 gulp.task('build:js', () => {
     return gulp.src(src.script)
-        .pipe($.rigger()) // Add dependent files
         .pipe($.sourcemaps.init())
-        .pipe($.if(config.min.js, $.uglify()))
-        .pipe($.if(config.min.js, $.rename({ suffix: '.min' })))
-        .pipe($.sourcemaps.write(dest.map))
+        .pipe($.babel({ presets: ['es2015'] }))
+        .pipe($.if(data.min.js, $.uglify()))
+        .pipe($.if(data.min.js, $.rename({ suffix: '.min' })))
+        .pipe($.sourcemaps.write(dest.sourceMap))
         .pipe(gulp.dest(dest.script));
 });
 
@@ -125,18 +125,18 @@ gulp.task('build', gulp.series(gulp.parallel('build:css', 'build:js', 'build:img
 
 // SERVER AND BROWSER TASK
 gulp.task('sync', (done) => {
-    $.browserSync.init(config.browserSync);
+    $.browserSync.init(plg.browserSync);
     done();
 });
 
 // WATCH TASK
 gulp.task('watch', (done) => {
-    gulp.watch([watch.markup,
-                watch.inlineSvg], gulp.series(  'build:html', reload));
-    gulp.watch( watch.style,      gulp.series(  'build:css',  reload));
-    gulp.watch( watch.script,     gulp.series(  'build:js',   reload));
-    gulp.watch( watch.image,      gulp.series(  'build:img',  reload));
-    gulp.watch( configFile, gulp.series(initcf, 'build',      reload));
+    gulp.watch(data.image.inlineSvg ? [watch.inlineSvg, watch.markup] :
+               watch.markup, gulp.series('build:html',   reload));
+    gulp.watch(watch.style,  gulp.series('build:css',    reload));
+    gulp.watch(watch.script, gulp.series('build:js',     reload));
+    gulp.watch(watch.image,  gulp.series('build:img',    reload));
+    gulp.watch(cdir,         gulp.series(cinit, 'build', reload));
     done();
 });
 
