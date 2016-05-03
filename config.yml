@@ -1,58 +1,40 @@
 ################################################## PROJECT SETTINGS ###################################################
 
 prj:
-  # PAGE METADATA -----------------------------------------------------------------------------------------------------
-  meta:
-    lang:         en
-    title:        New document
-    description:  True frontend
-    author:       ma1oy
+  pre: # PREPROCESSORS -----------------------------------------------------------------------------------------------
+    html:         ''
+    css:          sass
+    js:           babel
 
-  # IMAGES SETTINGS ---------------------------------------------------------------------------------------------------
-  image:
-    favicon:      img/favicon.png
-    imageSrc:     #img/...
-    inlineSvg:    true
+  preOpt: # PREPROCESSORS OPTIONS ------------------------------------------------------------------------------------
+    sass:
+      outputStyle: 'compressed'
+    babel:
+      presets:    [es2015]
 
-  # MAIN FILES FOR BUILD ----------------------------------------------------------------------------------------------
-  mainFiles:
-    markup:       index.twig
-    style:        style.scss
-    script:       main.js
-
-  # BUILT FILES MINIMIZATION ------------------------------------------------------------------------------------------
-  min:
-    html:         false
-    svg:          true
-    css:          false
-    js:           true
-    image:        true
-
-  # CDN REFERENCES FOR STYLES -----------------------------------------------------------------------------------------
-  stylesCDNs:
-    - //fonts.googleapis.com/css?family=Roboto:400,300
-    # https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css
-    # https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/css/bootstrap.min.css
-
-  # CDN REFERENCES FOR SCRIPTS ----------------------------------------------------------------------------------------
-  scriptsCDNs:
-    # https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js
-    # https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha/js/bootstrap.min.js
-
+  mcb: # BUILT FILES SETTINGS -----------------------------------------------------------------------------------------
+      # -----------min---clean---build
+      html:       [true,  true,  true ]
+      css:        [false, true,  true ]
+      js:         [true,  true,  true ]
+      svg:        [true,  true,  false]
+      img:        [true,  false, false]
 
 ################################################## PLUGINS SETTINGS ###################################################
 
 plg:
-  # VENDOR PREFIX AUTO ADDING SETTINGS --------------------------------------------------------------------------------
-  autoprefixer:
+  del: # DELETE SETTINGS ---------------------------------------------------------------------------------------------
+    force:        true # allow deleting the current working directory and files/folders outside it
+#    dryRun:       true # see what would be deleted
+
+  autoprefixer: # VENDOR PREFIX AUTO ADDING SETTINGS -----------------------------------------------------------------
     browsers:     [last 2 versions, safari 5, ie 8, ie 9, opera 12.1, ios 6, android 4]
     cascade:      false
 
-  # SERVER STARTING AND BROWSER SYNCHRONIZATION -----------------------------------------------------------------------
-  browserSync:
+  browserSync: # SERVER STARTING AND BROWSER SYNCHRONIZATION ---------------------------------------------------------
     server:
       baseDir:    'build/'
-  #    index:      pablic.html
+  #    index:      public.html
   #    directory:  true
   #  tunnel:       true
   #  host:         myhost
@@ -60,25 +42,26 @@ plg:
   #  proxy:        yourlocal.dev
     logPrefix:    BROWSER
 
-
 ################################################ DIRECTORIES SETTINGS #################################################
 
 dir:
-  # DESTINATION DIRECTORIES FOR BUILT FILES ---------------------------------------------------------------------------
-  dest:
-    public:       'public'
-    build:        'build'
-    markup:       'build'
-    style:        'build'
-    script:       'build'
-    image:        'build/img'
-    inlineSvg:    'build/imgi'
-    sourceMap:    './maps'
+  dest: # DESTINATION DIRECTORIES FOR BUILT FILES --------------------------------------------------------------------
+    html:         'build/templates/'
+    css:          'build/css/'
+    js:           'build/js/'
+    svg:          'build/img/inline'
+    img:          'build/img/'
+    srcMap:       'maps/'
 
-  # DIRECTORIES OF SOURCE FILES FOR BUILDING --------------------------------------------------------------------------
-  src:
-    markup:       'src/markup/**/*.twig'
-    style:        'src/styles/**/*.scss'
-    script:       'src/scripts/**/*.js'
-    image:        ['src/images/**/*.*', '!src/images/inline/**']
-    inlineSvg:    'src/images/inline/**/*.svg'
+  src: # DIRECTORIES OF SOURCE FILES FOR BUILDING --------------------------------------------------------------------
+    html:         'src/templates/**/*.html'
+    css:          'src/css/**/*.scss'
+    js:           'src/js/**/*.js'
+    svg:          'src/img/inline/**/*.svg'
+    img:          ['src/img/**/*.*', '!src/img/inline/**']
+
+  # will use src directories when commented
+#  watch: # DIRECTORIES OF FILES FOR WATCHING ------------------------------------------------------------------------
+#    html:         'templates/**/index.html'
+#    css:          'css/**/style.scss'
+#    js:           'js/**/main.js'

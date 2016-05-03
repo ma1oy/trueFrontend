@@ -1,7 +1,4 @@
-/node_modules
-/npm-debug.log
-/.gulp-scss-cache
-/.sass-cache
+node_modules
+npm-debug.log
 /build
-/public
-/logs
+/src
