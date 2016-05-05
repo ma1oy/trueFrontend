@@ -33,14 +33,7 @@ function cinit(done) {
     plg   = conf.plg;
     dest  = conf.dir.dest;
     src   = conf.dir.src;
-    if (conf.dir.watch) {
-        for (let key in src) {
-            if (src.hasOwnProperty(key)) {
-                watch[key] = conf.dir.watch[key] || src[key];
-            }
-        }
-    }
-    else watch = src;
+    watch = Object.assign({}, src, conf.dir.watch);
     done();
 }
 

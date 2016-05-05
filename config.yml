@@ -24,7 +24,7 @@ prj:
 
 plg:
   del: # DELETE SETTINGS ---------------------------------------------------------------------------------------------
-    force:        true # allow deleting the current working directory and files/folders outside it
+#    force:        true # allow deleting the current working directory and files/folders outside it
 #    dryRun:       true # see what would be deleted
 
   autoprefixer: # VENDOR PREFIX AUTO ADDING SETTINGS -----------------------------------------------------------------

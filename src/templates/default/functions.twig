@@ -1,8 +1,0 @@
-{% macro getFileName(file, type, min) %}
-    {% set temp = [file|split('.')|first] %}
-    {% if min %}
-        {{temp|merge(['min'], [type]).join('.')}}
-    {% else %}
-        {{temp|merge([type]).join('.')}}
-    {% endif %}
-{% endmacro %}

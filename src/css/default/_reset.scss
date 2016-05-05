@@ -45,7 +45,6 @@ h1 {
 }
 
 menu, ul, ol {
-  //display: inline-block;
   margin: 0;
   padding: 0;
 }
@@ -53,10 +52,6 @@ menu, ul, ol {
 li {
   list-style: none;
 }
-
-//menu > li, ol > li {
-//  float: left;
-//}
 
 a {
   display: block;
@@ -78,7 +73,7 @@ hr {
 }
 
 input, img, svg {
-  //vertical-align: top; //baseline;
+  vertical-align: top;
 }
 
 svg {
