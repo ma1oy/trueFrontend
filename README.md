@@ -23,30 +23,11 @@ If you do not have `git`, `nodejs`, `npm` and `gulp` you must install them first
 
 > **Important:** the installation commands in this manual are only for Ubuntu. For other systems use [google](https://www.google.com/#q=how+to+install)'s help
 
-Type the following commands at your command line `(Ctrl + Alt + T)`.
-
-Before installation:
+To install `nodejs` and `npm` type the following commands at your command line `(Ctrl + Alt + T)`:
 
 ```sh
-$sudo apt-get update
-```
-
-To install `nodejs`:
-
-```sh
+$ sudo apt-get update
 $ sudo apt-get i nodejs
-```
-
-To install `npm`:
-
-```sh
-$ sudo apt-get i npm
-```
-
-To install `gulp`:
-
-```sh
-$ sudo npm i gulpjs/gulp-cli#4.0 -g
 ```
 
 > **Warning:** if the above programs are already installed it is highly recommended to update them.
@@ -63,13 +44,6 @@ To update `npm`:
 
 ```sh
 $ sudo npm i npm -g
-```
-
-To update `gulp`:
-
-```sh
-$ sudo npm uninstall gulp -g
-$ sudo npm i gulpjs/gulp-cli#4.0 -g
 ```
 
 ###Main installation
@@ -104,7 +78,18 @@ Run `gulp` with the following commands:
 - **`build:css`** - parse files from `dir.src.css` folder, build them and put into `dir.dest.css` folder;
 - **`build:js`** - parse files from `dir.src.js` folder, build them and put into `dir.dest.js` folder;
 - **`build:svg`** - parse `svg` files from `source:inlineSvg` folder, combine them into one with `<symbol>` elements and put into `dir.dest.svg` folder;
-- **`build:img`** - get images from `dir.src.img` folder, compress them and put into `dir.dest.img` folder.
+- **`build:img`** - get images from `dir.src.img` folder, compress them and put into `dir.dest.img` folder;
+- **`watch:cfg`** - watch for `config.yml` file changes and if it changed start `build` command;
+- **`watch:html`** - watch for file changes in `dir.watch.html` or `dir.src.html` directory if the first do not exist and if it changed start `build:html` command;
+- **`watch:css`** - watch for file changes in `dir.watch.css` or `dir.src.css` directory if the first do not exist and if it changed start `build:css` command;
+- **`watch:js`** - watch for file changes in `dir.watch.js` or `dir.src.js` directory if the first do not exist and if it changed start `build:js` command;
+- **`watch:svg`** - watch for file changes in `dir.watch.svg` or `dir.src.svg` directory if the first do not exist and if it changed start `build:svg` command;
+- **`watch:img`** - watch for file changes in `dir.watch.img` or `dir.src.img` directory if the first do not exist and if it changed start `build:img` command;
+- **`clean:html`** - delete `dir.dest.html` directory and all files in it;
+- **`clean:css`** - delete `dir.dest.css` directory and all files in it;
+- **`clean:js`** - delete `dir.dest.js` directory and all files in it;
+- **`clean:svg`** - delete `dir.dest.svg` directory and all files in it;
+- **`clean:img`** - delete `dir.dest.img` directory and all files in it;
 
 ##Settings
 
